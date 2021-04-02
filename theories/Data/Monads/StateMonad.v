@@ -6,8 +6,9 @@ Set Strict Implicit.
 
 Section StateType.
   Variable S : Type.
+  Universe i j.
 
-  Record state (t : Type) : Type := mkState
+  Record state (t : Type@{i}) : Type@{j} := mkState
   { runState : S -> t * S }.
 
   Definition evalState {t} (c : state t) (s : S) : t :=
@@ -30,9 +31,9 @@ Section StateType.
   ; put := fun v => mkState (fun _ => (tt, v))
   }.
 
-  Variable m : Type -> Type.
+  Variable m : Type@{i} -> Type@{j}.
 
-  Record stateT (t : Type) : Type := mkStateT
+  Record stateT (t : Type@{i}) : Type@{j} := mkStateT
   { runStateT : S -> m (t * S)%type }.
 
   Variable M : Monad m.

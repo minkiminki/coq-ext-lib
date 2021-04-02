@@ -2,11 +2,14 @@ Require Import ExtLib.Structures.Monad.
 
 Set Implicit Arguments.
 
-Class MonadZero (m : Type -> Type) : Type :=
-{ mzero : forall {T}, m T }.
+Section MONADZERO.
+  Class MonadZero@{i j} (m : Type@{i} -> Type@{j}) : Type :=
+    { mzero : forall {T: Type@{i}}, m T }.
+End MONADZERO.
 
 Section ZeroFuncs.
-  Context {m : Type -> Type}.
+  Universe i j.
+  Context {m : Type@{i} -> Type@{j}}.
   Context {Monad_m : Monad m}.
   Context {Zero_m : MonadZero m}.
 

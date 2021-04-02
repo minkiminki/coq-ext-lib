@@ -2,8 +2,11 @@ Require Import ExtLib.Structures.Monad.
 
 Set Implicit Arguments.
 
-Class MonadFix (m : Type -> Type) : Type :=
-{ mfix : forall {T U}, ((T -> m U) -> T -> m U) -> T -> m U }.
+Section UNIVERSE.
+  Universe i j.
+  Class MonadFix (m : Type -> Type) : Type :=
+    { mfix : forall {T: Type@{i}} {U: Type@{j}}, ((T -> m U) -> T -> m U) -> T -> m U }.
+End UNIVERSE.
 
 Section MonadFix.
 

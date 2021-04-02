@@ -6,8 +6,9 @@ Set Maximal Implicit Insertion.
 
 Section ReaderType.
   Variable S : Type.
+  Universe i j.
 
-  Record reader (t : Type) : Type := mkReader
+  Record reader (t : Type@{i}) : Type@{j} := mkReader
   { runReader : S -> t }.
 
   Global Instance Monad_reader : Monad reader :=
@@ -25,7 +26,7 @@ Section ReaderType.
 
   Variable m : Type -> Type.
 
-  Record readerT (t : Type) : Type := mkReaderT
+  Record readerT (t : Type@{i}) : Type@{j} := mkReaderT
   { runReaderT : S -> m t }.
 
   Variable M : Monad m.

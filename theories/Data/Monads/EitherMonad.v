@@ -9,6 +9,7 @@ Local Open Scope monad_scope.
 
 Section except.
   Variable T : Type.
+  Universe i j.
 
   Global Instance Monad_either : Monad (sum T) :=
   { ret  := fun _ v => inr v
@@ -26,7 +27,7 @@ Section except.
                           end
   }.
 
-  Variable m : Type -> Type.
+  Variable m : Type@{i} -> Type@{j}.
 
   Inductive eitherT A := mkEitherT { unEitherT : m (sum T A) }.
 
