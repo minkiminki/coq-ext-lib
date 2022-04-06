@@ -25,7 +25,7 @@ Polymorphic Global Instance Plus_option : MonadPlus option :=
     end
 }.
 
-Global Instance Exception_option : MonadExc unit option :=
+Polymorphic Global Instance Exception_option : MonadExc unit option :=
 { raise _ _   := None
 ; catch _ c h := match c with
                  | None   => h tt
