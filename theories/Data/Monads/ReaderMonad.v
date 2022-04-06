@@ -24,14 +24,14 @@ Section ReaderType.
   ; local := fun _ f cmd => mkReader (fun x => runReader cmd (f x))
   }.
 
-  Variable m : Type -> Type.
+  Variable m : Type@{i} -> Type@{j}.
 
   Record readerT (t : Type@{i}) : Type@{j} := mkReaderT
   { runReaderT : S -> m t }.
 
-  Variable M : Monad m.
+  Variable M : Monad@{i j} m.
 
-  Global Instance Monad_readerT : Monad readerT :=
+  Polymorphic Global Instance Monad_readerT : Monad readerT :=
   { ret := fun _ x => mkReaderT (fun s => @ret _ M _ x)
   ; bind := fun _ _ c1 c2 =>
     mkReaderT (fun s =>
@@ -39,41 +39,41 @@ Section ReaderType.
         runReaderT (c2 v) s))
   }.
 
-  Global Instance MonadReader_readerT : MonadReader S readerT :=
+  Polymorphic Global Instance MonadReader_readerT : MonadReader S readerT :=
   { ask := mkReaderT (fun x => ret x)
   ; local := fun _ f cmd => mkReaderT (fun x => runReaderT cmd (f x))
   }.
 
-  Global Instance MonadT_readerT : MonadT readerT m :=
+  Polymorphic Global Instance MonadT_readerT : MonadT readerT m :=
   { lift := fun _ c => mkReaderT (fun _ => c)
   }.
 
-  Global Instance MonadZero_readerT (MZ : MonadZero m) : MonadZero readerT :=
+  Polymorphic Global Instance MonadZero_readerT (MZ : MonadZero m) : MonadZero readerT :=
   { mzero := fun _ => lift mzero }.
 
-  Global Instance MonadState_readerT T (MS : MonadState T m) : MonadState T readerT :=
+  Polymorphic Global Instance MonadState_readerT T (MS : MonadState T m) : MonadState T readerT :=
   { get := lift get
   ; put := fun x => lift (put x)
   }.
 
-  Global Instance MonadWriter_readerT T (Mon : Monoid T) (MW : MonadWriter Mon m) : MonadWriter Mon readerT :=
+  Polymorphic Global Instance MonadWriter_readerT T (Mon : Monoid T) (MW : MonadWriter Mon m) : MonadWriter Mon readerT :=
   { tell := fun v => lift (tell v)
   ; listen := fun _ c => mkReaderT (fun s => listen (runReaderT c s))
   ; pass := fun _ c => mkReaderT (fun s => pass (runReaderT c s))
   }.
 
-  Global Instance MonadExc_readerT {E} (ME : MonadExc E m) : MonadExc E readerT :=
+  Polymorphic Global Instance MonadExc_readerT {E} (ME : MonadExc E m) : MonadExc E readerT :=
   { raise := fun _ v => lift (raise v)
   ; catch := fun _ c h => mkReaderT (fun s => catch (runReaderT c s) (fun x => runReaderT (h x) s))
   }.
 
-  Global Instance MonadPlus_readerT {MP:MonadPlus m} : MonadPlus readerT :=
+  Polymorphic Global Instance MonadPlus_readerT {MP:MonadPlus m} : MonadPlus readerT :=
   { mplus _A _B mA mB := mkReaderT (fun r => mplus (runReaderT mA r)
                                                    (runReaderT mB r))
   }.
 
 
-  Global Instance MonadFix_readerT (MF : MonadFix m) : MonadFix readerT :=
+  Polymorphic Global Instance MonadFix_readerT (MF : MonadFix m) : MonadFix readerT :=
   { mfix := fun _ _ r x =>
     mkReaderT (fun s => mfix2 _ (fun f x => runReaderT (r (fun x => mkReaderT (f x)) x)) x s)
   }.
