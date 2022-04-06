@@ -31,9 +31,9 @@ Section except.
 
   Inductive eitherT A := mkEitherT { unEitherT : m (sum T A) }.
 
-  Variable M : Monad m.
+  Variable M : Monad@{i j} m.
 
-  Global Instance Monad_eitherT : Monad eitherT :=
+  Polymorphic Global Instance Monad_eitherT : Monad eitherT :=
   { ret := fun _ x => mkEitherT (ret (inr x))
   ; bind := fun _ _ c f => mkEitherT (
       xM <- unEitherT c ;;
@@ -44,7 +44,7 @@ Section except.
     )
   }.
 
-  Global Instance Exception_eitherT : MonadExc T eitherT :=
+  Polymorphic Global Instance Exception_eitherT : MonadExc T eitherT :=
   { raise := fun _ v => mkEitherT (ret (inl v))
   ; catch := fun _ c h => mkEitherT (
       xM <- unEitherT c ;;
@@ -55,7 +55,7 @@ Section except.
     )
   }.
 
-  Global Instance MonadPlus_eitherT : MonadPlus eitherT :=
+  Polymorphic Global Instance MonadPlus_eitherT : MonadPlus eitherT :=
   { mplus _A _B mA mB := mkEitherT (
       x <- unEitherT mA ;;
       match x with
@@ -70,20 +70,20 @@ Section except.
     )
   }.
 
-  Global Instance MonadT_eitherT : MonadT eitherT m :=
+  Polymorphic Global Instance MonadT_eitherT : MonadT eitherT m :=
   { lift := fun _ c => mkEitherT (liftM ret c) }.
 
-  Global Instance MonadState_eitherT {T} (MS : MonadState T m) : MonadState T eitherT :=
+  Polymorphic Global Instance MonadState_eitherT {T} (MS : MonadState T m) : MonadState T eitherT :=
   { get := lift get
   ; put := fun v => lift (put v)
   }.
 
-  Global Instance MonadReader_eitherT {T} (MR : MonadReader T m) : MonadReader T eitherT :=
+  Polymorphic Global Instance MonadReader_eitherT {T} (MR : MonadReader T m) : MonadReader T eitherT :=
   { ask := lift ask
   ; local := fun _ f cmd => mkEitherT (local f (unEitherT cmd))
   }.
 
-  Global Instance MonadWriter_eitherT {T} (Mon : Monoid T) (MW : MonadWriter Mon m) : MonadWriter Mon eitherT :=
+  Polymorphic Global Instance MonadWriter_eitherT {T} (Mon : Monoid T) (MW : MonadWriter Mon m) : MonadWriter Mon eitherT :=
   { tell := fun x => lift (tell x)
   ; listen := fun _ c => mkEitherT (
     x <- listen (unEitherT c) ;;
@@ -99,7 +99,7 @@ Section except.
     end)
   }.
 
-  Global Instance MonadFix_eitherT (MF : MonadFix m) : MonadFix eitherT :=
+  Polymorphic Global Instance MonadFix_eitherT (MF : MonadFix m) : MonadFix eitherT :=
   { mfix := fun _ _ r v =>
     mkEitherT (mfix (fun f x => unEitherT (r (fun x => mkEitherT (f x)) x)) v)
   }.
